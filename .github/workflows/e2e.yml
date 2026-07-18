@@ -5,6 +5,9 @@ on:
     branches: [master]
   pull_request:
     branches: [master]
+    paths-ignore:
+      - ".github/**"
+      - "**/*.md"
   schedule:
     - cron: '0 6 * * *'  # Nightly at 6am UTC
   workflow_dispatch:
