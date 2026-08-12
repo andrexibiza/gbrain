@@ -12,11 +12,18 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll } from 'bun:test';
+import { DEFAULT_EMBEDDING_DIMENSIONS } from '../src/core/ai/defaults.ts';
+import { configureGateway, resetGateway } from '../src/core/ai/gateway.ts';
 import { PGLiteEngine } from '../src/core/pglite-engine.ts';
 
 let engine: PGLiteEngine;
 
 beforeAll(async () => {
+  resetGateway();
+  configureGateway({
+    embedding_dimensions: DEFAULT_EMBEDDING_DIMENSIONS,
+    env: {},
+  });
   engine = new PGLiteEngine();
   await engine.connect({});
   await engine.initSchema();
@@ -24,10 +31,11 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await engine.disconnect();
+  resetGateway();
 });
 
 const vec = (...vals: number[]): Float32Array => {
-  const a = new Float32Array(1536);
+  const a = new Float32Array(DEFAULT_EMBEDDING_DIMENSIONS);
   for (let i = 0; i < vals.length; i++) a[i] = vals[i];
   return a;
 };
